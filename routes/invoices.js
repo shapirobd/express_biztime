@@ -3,6 +3,16 @@ const express = require("express");
 const db = require("../db");
 const router = express.Router();
 
+async function getCompanyFromCode(code) {
+	const results = await db.query(`SELECT * FROM companies WHERE code=$1`, [
+		code,
+	]);
+	if (results.rows.length === 0) {
+		throw new ExpressError(`Can't find company with code {code}`, 404);
+	}
+	return results.rows[0];
+}
+
 router.get("/", async (req, res, next) => {
 	try {
 		const results = await db.query(`SELECT * FROM invoices`);
@@ -15,24 +25,16 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		const invoiceResults = await db.query(
-			`SELECT * FROM invoices WHERE id=$1`,
-			[id]
-		);
-		if (invoiceResults.rows.length === 0) {
+		const results = await db.query(`SELECT * FROM invoices WHERE id=$1`, [id]);
+		if (results.rows.length === 0) {
 			throw new ExpressError(`Can't find invoice with id ${id}`, 404);
 		}
-		const comp_code = invoiceResults.rows[0].comp_code;
-		const companyResults = await db.query(
-			`SELECT * FROM companies WHERE code=$1`,
-			[comp_code]
-		);
-		if (companyResults.rows.length === 0) {
-			throw new ExpressError(`Can't find company with code ${comp_code}`, 404);
-		}
-		delete invoiceResults.rows[0].comp_code;
-		invoiceResults.rows[0]["company"] = companyResults.rows[0];
-		return res.json({ invoice: invoiceResults.rows[0] });
+		const comp_code = results.rows[0].comp_code;
+		const company = await getCompanyFromCode(comp_code);
+
+		delete results.rows[0].comp_code;
+		results.rows[0]["company"] = company;
+		return res.json({ invoice: results.rows[0] });
 	} catch (e) {
 		next(e);
 	}
