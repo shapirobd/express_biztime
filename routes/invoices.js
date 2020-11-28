@@ -12,16 +12,14 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
-router.get("/:code", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
 	try {
-		const { code } = req.params;
-		const results = await db.query(`SELECT * FROM companies WHERE code=$1`, [
-			code,
-		]);
+		const { id } = req.params;
+		const results = await db.query(`SELECT * FROM invoices WHERE id=$1`, [id]);
 		if (results.rows.length === 0) {
-			throw new ExpressError(`Can't find company with code ${code}`, 404);
+			throw new ExpressError(`Can't find invoice with id ${id}`, 404);
 		}
-		return res.json({ company: results.rows[0] });
+		return res.json({ invoice: results.rows[0] });
 	} catch (e) {
 		next(e);
 	}
