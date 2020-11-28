@@ -22,10 +22,14 @@ router.get("/:id", async (req, res, next) => {
 		if (invoiceResults.rows.length === 0) {
 			throw new ExpressError(`Can't find invoice with id ${id}`, 404);
 		}
+		const comp_code = invoiceResults.rows[0].comp_code;
 		const companyResults = await db.query(
 			`SELECT * FROM companies WHERE code=$1`,
-			[invoiceResults.rows[0].comp_code]
+			[comp_code]
 		);
+		if (companyResults.rows.length === 0) {
+			throw new ExpressError(`Can't find company with code ${comp_code}`, 404);
+		}
 		delete invoiceResults.rows[0].comp_code;
 		invoiceResults.rows[0]["company"] = companyResults.rows[0];
 		return res.json({ invoice: invoiceResults.rows[0] });
@@ -47,19 +51,18 @@ router.post("/", async (req, res, next) => {
 	}
 });
 
-router.put("/:code", async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
 	try {
-		const { code } = req.params;
-		const { name, description } = req.body;
+		const { id } = req.params;
+		const { amt } = req.body;
 		const results = await db.query(
-			`UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code, name, description`,
-			[name, description, code]
+			`UPDATE invoices SET amt=$1 WHERE id=$2 RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+			[amt, id]
 		);
-		console.log(results);
 		if (results.rows.length === 0) {
-			throw new ExpressError(`Can't find company with code ${code}`, 404);
+			throw new ExpressError(`Can't find invoice with id ${id}`, 404);
 		}
-		return res.json({ company: results.rows[0] });
+		return res.json({ invoice: results.rows[0] });
 	} catch (e) {
 		next(e);
 	}
