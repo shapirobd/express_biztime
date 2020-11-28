@@ -36,12 +36,12 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
 	try {
-		const { code, name, description } = req.body;
+		const { comp_code, amt } = req.body;
 		const results = await db.query(
-			`INSERT INTO companies (code, name, description) VALUES ($1, $2, $3)`,
-			[code, name, description]
+			`INSERT INTO invoices (comp_code, amt) VALUES ($1, $2) RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+			[comp_code, amt]
 		);
-		return res.status(201).json({ company: { code, name, description } });
+		return res.status(201).json({ invoice: results.rows[0] });
 	} catch (e) {
 		next(e);
 	}
