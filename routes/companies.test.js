@@ -80,11 +80,16 @@ describe("PUT /companies/:code", () => {
 			description: "Awesome shoes",
 		});
 		expect(resp.statusCode).toBe(200);
+		testCompanyResult = await db.query(
+			`SELECT * FROM companies WHERE code=$1`,
+			[testCompany.code]
+		);
+		testCompany = testCompanyResult.rows[0];
 		expect(resp.body).toEqual({
 			company: {
-				code: "goog",
-				name: "Nike",
-				description: "Awesome shoes",
+				code: testCompany.code,
+				name: testCompany.name,
+				description: testCompany.description,
 			},
 		});
 	});
