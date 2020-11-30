@@ -131,19 +131,19 @@ describe("PUT /invoices/:id", () => {
 	});
 });
 
-// describe("DELETE /companies/:code", () => {
-// 	test("Company deleted", async () => {
-// 		const resp = await request(app).delete(`/companies/${testCompany.code}`);
-// 		expect(resp.statusCode).toBe(200);
-// 		expect(resp.body).toEqual({
-// 			status: "deleted",
-// 		});
-// 	});
-// 	test("404 if company code not found", async () => {
-// 		const resp = await request(app).delete(`/companies/999`);
-// 		expect(resp.statusCode).toBe(404);
-// 		expect(resp.body).toEqual({
-// 			error: "Can't find company with code 999",
-// 		});
-// 	});
-// });
+describe("DELETE /invoices/:code", () => {
+	test("Invoice deleted", async () => {
+		const resp = await request(app).delete(`/invoices/${testInvoice.id}`);
+		expect(resp.statusCode).toBe(200);
+		expect(resp.body).toEqual({
+			status: "deleted",
+		});
+	});
+	test("404 if invoice id not found", async () => {
+		const resp = await request(app).delete(`/invoices/9876`);
+		expect(resp.statusCode).toBe(404);
+		expect(resp.body).toEqual({
+			error: "Can't find invoice with id 9876",
+		});
+	});
+});
