@@ -73,13 +73,32 @@ describe("POST /companies", () => {
 	});
 });
 
-// describe('PUT /companies/:code', () => {
-//     test(, async () => {
-// const resp = await request(app).get("/companies");
-// expect(resp.statusCode).toBe(200);
-//         expect()
-//     })
-// })
+describe("PUT /companies/:code", () => {
+	test("Company updated", async () => {
+		const resp = await request(app).put(`/companies/${testCompany.code}`).send({
+			name: "Nike",
+			description: "Awesome shoes",
+		});
+		expect(resp.statusCode).toBe(200);
+		expect(resp.body).toEqual({
+			company: {
+				code: "goog",
+				name: "Nike",
+				description: "Awesome shoes",
+			},
+		});
+	});
+	test("404 if company code not found", async () => {
+		const resp = await request(app).put(`/companies/999`).send({
+			name: "Nike",
+			description: "Awesome shoes",
+		});
+		expect(resp.statusCode).toBe(404);
+		expect(resp.body).toEqual({
+			error: "Can't find company with code 999",
+		});
+	});
+});
 
 // describe('DELETE /companies/:code', () => {
 //     test(, async () => {

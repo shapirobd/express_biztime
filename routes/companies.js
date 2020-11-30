@@ -48,7 +48,7 @@ router.put("/:code", async (req, res, next) => {
 			`UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code, name, description`,
 			[name, description, code]
 		);
-		console.log(results);
+		console.log(results.rows[0]);
 		if (results.rows.length === 0) {
 			throw new ExpressError(`Can't find company with code ${code}`, 404);
 		}
