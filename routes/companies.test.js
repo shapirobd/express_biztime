@@ -37,26 +37,47 @@ describe("GET /companies", () => {
 	});
 });
 
-// describe('GET /companies/:code') {
-//     test() {
-//         expect()
-//     }
-// }
+describe("GET /companies/:code", () => {
+	test("Correct company returned", async () => {
+		const resp = await request(app).get(`/companies/${testCompany.code}`);
+		expect(resp.statusCode).toBe(200);
+		expect(resp.body).toEqual({
+			company: {
+				code: testCompany.code,
+				name: testCompany.name,
+				description: testCompany.description,
+			},
+		});
+	});
+	test("404 if company code not found", async () => {
+		const resp = await request(app).get(`/companies/123`);
+		expect(resp.statusCode).toBe(404);
+		expect(resp.body).toEqual({
+			error: "Can't find company with code 123",
+		});
+	});
+});
 
-// describe('POST /companies') {
-//     test() {
+// describe('POST /companies', () => {
+//     test(, async () => {
+// const resp = await request(app).get("/companies");
+// expect(resp.statusCode).toBe(200);
 //         expect()
-//     }
-// }
+//     })
+// })
 
-// describe('PUT /companies/:code') {
-//     test() {
+// describe('PUT /companies/:code', () => {
+//     test(, async () => {
+// const resp = await request(app).get("/companies");
+// expect(resp.statusCode).toBe(200);
 //         expect()
-//     }
-// }
+//     })
+// })
 
-// describe('DELETE /companies/:code') {
-//     test() {
+// describe('DELETE /companies/:code', () => {
+//     test(, async () => {
+// const resp = await request(app).get("/companies");
+// expect(resp.statusCode).toBe(200);
 //         expect()
-//     }
-// }
+//     })
+// })
