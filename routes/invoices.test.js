@@ -47,26 +47,33 @@ describe("GET /invoices", () => {
 	});
 });
 
-// describe("GET /companies/:code", () => {
-// 	test("Correct company returned", async () => {
-// 		const resp = await request(app).get(`/companies/${testCompany.code}`);
-// 		expect(resp.statusCode).toBe(200);
-// 		expect(resp.body).toEqual({
-// 			company: {
-// 				code: testCompany.code,
-// 				name: testCompany.name,
-// 				description: testCompany.description,
-// 			},
-// 		});
-// 	});
-// 	test("404 if company code not found", async () => {
-// 		const resp = await request(app).get(`/companies/123`);
-// 		expect(resp.statusCode).toBe(404);
-// 		expect(resp.body).toEqual({
-// 			error: "Can't find company with code 123",
-// 		});
-// 	});
-// });
+describe("GET /invoices/:id", () => {
+	test("Correct invoice returned", async () => {
+		const resp = await request(app).get(`/invoices/${testInvoice.id}`);
+		expect(resp.statusCode).toBe(200);
+		expect(resp.body).toEqual({
+			invoice: {
+				id: testInvoice.id,
+				company: {
+					code: testInvoice.comp_code,
+					description: testCompany.description,
+					name: testCompany.name,
+				},
+				amt: testInvoice.amt,
+				paid: testInvoice.paid,
+				add_date: testInvoice.add_date.toISOString(),
+				paid_date: testInvoice.paid_date,
+			},
+		});
+	});
+	test("404 if invoice id not found", async () => {
+		const resp = await request(app).get(`/invoices/32`);
+		expect(resp.statusCode).toBe(404);
+		expect(resp.body).toEqual({
+			error: "Can't find invoice with id 32",
+		});
+	});
+});
 
 // describe("POST /companies", () => {
 // 	test("Company created", async () => {
