@@ -58,13 +58,20 @@ describe("GET /companies/:code", () => {
 	});
 });
 
-// describe('POST /companies', () => {
-//     test(, async () => {
-// const resp = await request(app).get("/companies");
-// expect(resp.statusCode).toBe(200);
-//         expect()
-//     })
-// })
+describe("POST /companies", () => {
+	test("Company created", async () => {
+		const body = {
+			code: "amzn",
+			name: "Amazon",
+			description: "Great for shopping",
+		};
+		const resp = await request(app).post("/companies").send(body);
+		expect(resp.statusCode).toBe(201);
+		expect(resp.body).toEqual({
+			company: body,
+		});
+	});
+});
 
 // describe('PUT /companies/:code', () => {
 //     test(, async () => {
