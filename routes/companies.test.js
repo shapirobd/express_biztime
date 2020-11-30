@@ -8,7 +8,7 @@ const db = require("../db");
 let testCompany;
 beforeEach(async () => {
 	const result = await db.query(
-		`INSERT INTO companies (code, name, description) VALUES ('goog', 'Google', 'The number 1 web browser.') RETURNING code, name, description`
+		`INSERT INTO companies (code, name, description) VALUES ('google', 'Google', 'The number 1 web browser.') RETURNING code, name, description`
 	);
 	testCompany = result.rows[0];
 });
@@ -73,10 +73,10 @@ describe("POST /companies", () => {
 	});
 });
 
-describe("PUT /companies/:code", () => {
+describe("PUT /companies/", () => {
 	test("Company updated", async () => {
-		const resp = await request(app).put(`/companies/${testCompany.code}`).send({
-			name: "Nike",
+		const resp = await request(app).put(`/companies`).send({
+			name: "Google",
 			description: "Awesome shoes",
 		});
 		expect(resp.statusCode).toBe(200);
@@ -94,13 +94,13 @@ describe("PUT /companies/:code", () => {
 		});
 	});
 	test("404 if company code not found", async () => {
-		const resp = await request(app).put(`/companies/999`).send({
-			name: "Nike",
+		const resp = await request(app).put(`/companies`).send({
+			name: "Gobstopper",
 			description: "Awesome shoes",
 		});
 		expect(resp.statusCode).toBe(404);
 		expect(resp.body).toEqual({
-			error: "Can't find company with code 999",
+			error: "Can't find company with code gobstopper",
 		});
 	});
 });

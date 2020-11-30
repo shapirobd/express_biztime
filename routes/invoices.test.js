@@ -9,11 +9,11 @@ let testInvoice;
 let testCompany;
 beforeEach(async () => {
 	const compResult = await db.query(
-		`INSERT INTO companies (code, name, description) VALUES ('goog', 'Google', 'The number 1 web browser.') RETURNING code, name, description`
+		`INSERT INTO companies (code, name, description) VALUES ('google', 'googlele', 'The number 1 web browser.') RETURNING code, name, description`
 	);
 	testCompany = compResult.rows[0];
 	const invResult = await db.query(
-		`INSERT INTO invoices (comp_code, amt) VALUES ('goog', 500) RETURNING id, comp_code, amt, paid, add_date, paid_date`
+		`INSERT INTO invoices (comp_code, amt) VALUES ('google', 500) RETURNING id, comp_code, amt, paid, add_date, paid_date`
 	);
 	testInvoice = invResult.rows[0];
 });
@@ -77,7 +77,7 @@ describe("GET /invoices/:id", () => {
 describe("POST /invoices", () => {
 	test("Invoice created", async () => {
 		const resp = await request(app).post("/invoices").send({
-			comp_code: "goog",
+			comp_code: "google",
 			amt: 200,
 		});
 		const invoiceRes = await db.query(`SELECT * FROM invoices WHERE id=$1`, [

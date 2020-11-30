@@ -2,6 +2,7 @@ const ExpressError = require("../expressError");
 const express = require("express");
 const db = require("../db");
 const router = express.Router();
+const slugify = require("slugify");
 
 router.get("/", async (req, res, next) => {
 	try {
@@ -40,10 +41,13 @@ router.post("/", async (req, res, next) => {
 	}
 });
 
-router.put("/:code", async (req, res, next) => {
+router.put("/", async (req, res, next) => {
 	try {
-		const { code } = req.params;
 		const { name, description } = req.body;
+		const code = slugify(name, {
+			replacement: "-",
+			lower: true,
+		});
 		const results = await db.query(
 			`UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code, name, description`,
 			[name, description, code]
