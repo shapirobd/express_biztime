@@ -75,20 +75,26 @@ describe("GET /invoices/:id", () => {
 	});
 });
 
-// describe("POST /companies", () => {
-// 	test("Company created", async () => {
-// 		const body = {
-// 			code: "amzn",
-// 			name: "Amazon",
-// 			description: "Great for shopping",
-// 		};
-// 		const resp = await request(app).post("/companies").send(body);
-// 		expect(resp.statusCode).toBe(201);
-// 		expect(resp.body).toEqual({
-// 			company: body,
-// 		});
-// 	});
-// });
+describe("POST /invoices", () => {
+	test("Invoice created", async () => {
+		const resp = await request(app).post("/invoices").send({
+			comp_code: "goog",
+			amt: 200,
+		});
+		const invoice = resp.body.invoice;
+		expect(resp.statusCode).toBe(201);
+		expect(resp.body).toEqual({
+			invoice: {
+				id: invoice.id,
+				comp_code: invoice.comp_code,
+				amt: invoice.amt,
+				paid: invoice.paid,
+				add_date: invoice.add_date,
+				paid_date: invoice.paid_date,
+			},
+		});
+	});
+});
 
 // describe("PUT /companies/:code", () => {
 // 	test("Company updated", async () => {
