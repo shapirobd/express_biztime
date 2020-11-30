@@ -100,10 +100,19 @@ describe("PUT /companies/:code", () => {
 	});
 });
 
-// describe('DELETE /companies/:code', () => {
-//     test(, async () => {
-// const resp = await request(app).get("/companies");
-// expect(resp.statusCode).toBe(200);
-//         expect()
-//     })
-// })
+describe("DELETE /companies/:code", () => {
+	test("Company deleted", async () => {
+		const resp = await request(app).delete(`/companies/${testCompany.code}`);
+		expect(resp.statusCode).toBe(200);
+		expect(resp.body).toEqual({
+			status: "deleted",
+		});
+	});
+	test("404 if company code not found", async () => {
+		const resp = await request(app).delete(`/companies/999`);
+		expect(resp.statusCode).toBe(404);
+		expect(resp.body).toEqual({
+			error: "Can't find company with code 999",
+		});
+	});
+});
