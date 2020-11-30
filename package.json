@@ -20,6 +20,7 @@
   "homepage": "https://github.com/shapirobd/express_biztime#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "pg": "^8.5.1"
+    "pg": "^8.5.1",
+    "supertest": "^6.0.1"
   }
 }
