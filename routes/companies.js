@@ -3,6 +3,7 @@ const express = require("express");
 const db = require("../db");
 const router = express.Router();
 const slugify = require("slugify");
+const { updateCompanyQuery, getCompanyQuery } = require("./helpers");
 
 router.get("/", async (req, res, next) => {
 	try {
@@ -16,15 +17,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:code", async (req, res, next) => {
 	try {
 		const { code } = req.params;
-		const results = await db.query(
-			`SELECT c.name, c.description, i.industry FROM companies AS c
-				LEFT JOIN companies_industries AS ci
-					ON ci.comp_code = c.code
-				LEFT JOIN industries AS i
-					ON ci.ind_code = i.code
-				WHERE c.code=$1`,
-			[code]
-		);
+		const results = await getCompanyQuery(code);
 		if (results.rows.length === 0) {
 			throw new ExpressError(`Can't find company with code ${code}`, 404);
 		}
@@ -57,11 +50,7 @@ router.put("/", async (req, res, next) => {
 			replacement: "-",
 			lower: true,
 		});
-		const results = await db.query(
-			`UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code, name, description`,
-			[name, description, code]
-		);
-		console.log(results.rows[0]);
+		const results = await updateCompanyQuery(name, description, code);
 		if (results.rows.length === 0) {
 			throw new ExpressError(`Can't find company with code ${code}`, 404);
 		}

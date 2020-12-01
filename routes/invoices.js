@@ -2,16 +2,7 @@ const ExpressError = require("../expressError");
 const express = require("express");
 const db = require("../db");
 const router = express.Router();
-
-async function getCompanyFromCode(code) {
-	const results = await db.query(`SELECT * FROM companies WHERE code=$1`, [
-		code,
-	]);
-	if (results.rows.length === 0) {
-		throw new ExpressError(`Can't find company with code {code}`, 404);
-	}
-	return results.rows[0];
-}
+const { getCompanyFromCode, determinePaidDate } = require("./helpers");
 
 router.get("/", async (req, res, next) => {
 	try {
@@ -65,19 +56,11 @@ router.put("/:id", async (req, res, next) => {
 			throw new ExpressError(`Can't find invoice with id ${id}`, 404);
 		}
 		const invoice = invSelect.rows[0];
-		let paid_date;
-		if (paid === true && invoice.paid == false) {
-			paid_date = new Date().toISOString();
-		} else if (paid === false && invoice.paid === true) {
-			paid_date = null;
-		} else if (invoice.paid === true) {
-			paid_date = invoice.paid_date;
-		}
+		let paid_date = determinePaidDate(paid, invoice);
 		const results = await db.query(
 			`UPDATE invoices SET amt=$1, paid=$2, paid_date=$3  WHERE id=$4 RETURNING id, comp_code, amt, paid, add_date, paid_date`,
 			[amt, paid, paid_date, id]
 		);
-
 		return res.json({ invoice: results.rows[0] });
 	} catch (e) {
 		next(e);
