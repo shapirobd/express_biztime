@@ -46,6 +46,7 @@ describe("GET /companies/:code", () => {
 				code: testCompany.code,
 				name: testCompany.name,
 				description: testCompany.description,
+				industries: [null],
 			},
 		});
 	});

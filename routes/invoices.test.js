@@ -102,6 +102,7 @@ describe("PUT /invoices/:id", () => {
 	test("Invoice updated", async () => {
 		const resp = await request(app).put(`/invoices/${testInvoice.id}`).send({
 			amt: 9999,
+			paid: true,
 		});
 		expect(resp.statusCode).toBe(200);
 		testInvoiceResult = await db.query(`SELECT * FROM invoices WHERE id=$1`, [
@@ -115,7 +116,7 @@ describe("PUT /invoices/:id", () => {
 				amt: testInvoice.amt,
 				paid: testInvoice.paid,
 				add_date: testInvoice.add_date.toISOString(),
-				paid_date: testInvoice.paid_date,
+				paid_date: testInvoice.paid_date.toISOString(),
 			},
 		});
 	});
