@@ -36,18 +36,18 @@ router.get("/", async (req, res, next) => {
 // 	}
 // });
 
-// router.post("/", async (req, res, next) => {
-// 	try {
-// 		const { code, name, description } = req.body;
-// 		const results = await db.query(
-// 			`INSERT INTO companies (code, name, description) VALUES ($1, $2, $3)`,
-// 			[code, name, description]
-// 		);
-// 		return res.status(201).json({ company: { code, name, description } });
-// 	} catch (e) {
-// 		next(e);
-// 	}
-// });
+router.post("/", async (req, res, next) => {
+	try {
+		const { code, industry } = req.body;
+		const results = await db.query(
+			`INSERT INTO industries (code, industry) VALUES ($1, $2)`,
+			[code, industry]
+		);
+		return res.status(201).json({ company: { code, industry } });
+	} catch (e) {
+		next(e);
+	}
+});
 
 // router.put("/", async (req, res, next) => {
 // 	try {
